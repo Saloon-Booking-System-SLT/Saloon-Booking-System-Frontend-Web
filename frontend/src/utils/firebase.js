@@ -1,5 +1,6 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -9,19 +10,20 @@ import {
   browserSessionPersistence,
 } from "firebase/auth";
 
-// ✅ Your Firebase config
+// ✅ Your new Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyCDXwghNQOji0TBgq0HwU9C5pkmtITF3Fo",
-  authDomain: "salon-fcbfb.firebaseapp.com",
-  projectId: "salon-fcbfb",
-  storageBucket: "salon-fcbfb.appspot.com", // ✅ Corrected bucket URL
-  messagingSenderId: "398504432118",
-  appId: "1:398504432118:web:40cd9e591d08e2ed91b7d7",
-  measurementId: "G-VPGYBS57H4",
+  apiKey: "AIzaSyBmuXSVsyUdtyJN8ze3Euii0H6Yeae6_bU",
+  authDomain: "saloon-booking-system-7ee3f.firebaseapp.com",
+  projectId: "saloon-booking-system-7ee3f",
+  storageBucket: "saloon-booking-system-7ee3f.firebasestorage.app",
+  messagingSenderId: "194406605053",
+  appId: "1:194406605053:web:7dbe58c13b680227d19e94",
+  measurementId: "G-2XKJWVXY0Z"
 };
 
 // ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 // ✅ Auth and Providers
 const auth = getAuth(app);
@@ -56,4 +58,5 @@ export {
   googleProvider,
   signInWithPhoneNumber,
   setupRecaptcha,
+  analytics,
 };
