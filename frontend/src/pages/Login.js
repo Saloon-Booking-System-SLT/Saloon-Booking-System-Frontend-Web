@@ -252,7 +252,14 @@ export default function CustomerLogin() {
 
         <p className="business-link">
           Are you a salon owner?{" "}
-          <a href="/login/business" className="sign-in-link">
+          <a 
+            href="http://localhost:3001" 
+            className="sign-in-link"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = 'http://localhost:3001';
+            }}
+          >
             Login here
           </a>
         </p>

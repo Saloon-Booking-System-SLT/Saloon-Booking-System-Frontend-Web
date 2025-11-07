@@ -21,12 +21,21 @@ const Home = () => {
     navigate("/login");
   };
 
+  const handleBusinessRedirect = () => {
+    // Direct redirect to business portal
+    const businessPortalURL = process.env.NODE_ENV === 'production' 
+      ? 'https://your-business-portal.vercel.app' // Replace with your actual business portal URL
+      : 'http://localhost:3001';
+    
+    window.location.href = businessPortalURL;
+  };
+
   return (
     <div className="home-wrapper">
       <header className="navbar">
         <div className="logo" onClick={() => navigate("/")}>Mobitel Salon</div>
         <nav className="nav-menu">
-          <button className="nav-btn-light" onClick={() => navigate("/business")}>For Business</button>
+          <button className="nav-btn-light" onClick={handleBusinessRedirect}>For Business</button>
           {!user ? (
             <>
               <button className="nav-link" onClick={() => navigate("/login/customer")}>Log In</button>
