@@ -32,6 +32,7 @@ function App() {
         <Route path="/login" element={<Navigate to="/login/customer" replace />} />
         <Route path="/login/customer" element={<CustomerLogin />} />
         <Route path="/login/business" element={<BusinessRedirect />} />
+        <Route path="/business" element={<BusinessRedirect />} />
         <Route path="/searchsalon" element={<Searchsalon />} />
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/select-services/:salonId" element={<SelectServicesPage />} />

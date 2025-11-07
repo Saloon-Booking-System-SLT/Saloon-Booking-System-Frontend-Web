@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BusinessRedirect = () => {
-  useEffect(() => {
-    // Redirect to business frontend in the same window
-    // You'll need to replace this URL with your deployed frontend-owner URL
-    window.location.href = 'https://your-business-frontend.vercel.app';
-  }, []);
+  const navigate = useNavigate();
 
   return (
     <div style={{ 
@@ -13,10 +10,27 @@ const BusinessRedirect = () => {
       justifyContent: 'center', 
       alignItems: 'center', 
       height: '100vh',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      padding: '20px',
+      textAlign: 'center'
     }}>
-      <h2>Redirecting to Business Portal...</h2>
-      <p>If you're not redirected automatically, <a href="https://your-business-frontend.vercel.app">click here</a></p>
+      <h2>🏢 Business Portal</h2>
+      <p>The business portal is currently being set up.</p>
+      <p>Please contact support or try again later.</p>
+      <button 
+        onClick={() => navigate('/')}
+        style={{
+          marginTop: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer'
+        }}
+      >
+        ← Back to Home
+      </button>
     </div>
   );
 };
