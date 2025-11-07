@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 
 
@@ -28,7 +28,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/login" element={<LoginSelection />} /> */}
+        <Route path="/login" element={<Navigate to="/login/customer" replace />} />
         <Route path="/login/customer" element={<CustomerLogin />} />
         <Route path="/searchsalon" element={<Searchsalon />} />
         <Route path="/profile" element={<Profile />} /> 
