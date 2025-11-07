@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import logo from '../assets/logo.png';
 import '../css/SalonTimeSlots.css';
 
@@ -23,7 +23,7 @@ const SalonTimeSlots = () => {
   useEffect(() => {
     const fetchProfessionals = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/professionals/${salon.id}`);
+        const res = await axios.get(`/professionals/${salon.id}`);
         setProfessionals(res.data);
         if (res.data.length > 0) {
           setSelectedProfessionalId(res.data[0]._id);
@@ -43,7 +43,7 @@ const SalonTimeSlots = () => {
 
   const fetchTimeSlots = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/timeslots', {
+      const res = await axios.get('/timeslots', {
         params: { professionalId: selectedProfessionalId, date: selectedDate }
       });
       setTimeSlots(res.data);
@@ -59,7 +59,7 @@ const SalonTimeSlots = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/timeslots', {
+      await axios.post('/timeslots', {
         salonId: salon.id,
         professionalId: selectedProfessionalId,
         date: selectedDate,
@@ -92,7 +92,7 @@ const SalonTimeSlots = () => {
     }
 
     try {
-      await Promise.all(slots.map(slot => axios.post('http://localhost:5000/api/timeslots', slot)));
+      await Promise.all(slots.map(slot => axios.post('/timeslots', slot)));
       fetchTimeSlots();
       alert("Time slots generated successfully!");
     } catch (err) {
@@ -105,7 +105,7 @@ const SalonTimeSlots = () => {
     if (!window.confirm("Delete this time slot?")) return;
     
     try {
-      await axios.delete(`http://localhost:5000/api/timeslots/${slotId}`);
+      await axios.delete(`/timeslots/${slotId}`);
       fetchTimeSlots();
       alert("Time slot deleted successfully!");
     } catch (err) {

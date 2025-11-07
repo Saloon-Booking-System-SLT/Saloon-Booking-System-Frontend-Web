@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../css/MyAppointmentsPage.css";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config/api";
 
 const MyAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -21,7 +22,7 @@ const MyAppointmentsPage = () => {
         console.log("🔍 Fetching appointments for user:", user?.email);
         
         const res = await fetch(
-          `http://localhost:5000/api/appointments?email=${user?.email}`
+          `${API_BASE_URL}/api/appointments?email=${user?.email}`
         );
         
         if (!res.ok) {
@@ -140,7 +141,7 @@ const MyAppointmentsPage = () => {
         comment: feedbackText
       });
 
-      const res = await fetch("http://localhost:5000/api/feedback", {
+      const res = await fetch(`${API_BASE_URL}/api/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Get API URL from environment variables
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api", // Backend shared base URL
+  baseURL: `${API_BASE_URL}/api`, // Backend shared base URL
   withCredentials: true,
 });
 
