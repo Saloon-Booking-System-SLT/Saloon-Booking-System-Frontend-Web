@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../firebase";
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
 } from "firebase/auth";
 import haircutImage from "../assets/hairdresser.jpg";
 import "../css/Login.css";
@@ -15,13 +16,29 @@ export default function CustomerLogin() {
   const [otp, setOtp] = useState("");
   const [showOtp, setShowOtp] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
+  // Check for redirect result on component mount
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          const user = result.user;
+          await saveUserToBackend(user);
+        }
+      } catch (error) {
+        console.error("Redirect result error:", error);
+        alert("Login failed. Please try again.");
+      }
+    };
 
+    handleRedirectResult();
+  }, []);
+
+  const saveUserToBackend = async (user) => {
+    try {
       const res = await fetch(`${API_BASE_URL}/api/users/google-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,18 +49,33 @@ export default function CustomerLogin() {
         }),
       });
 
-      if (!res.ok) return alert("Failed to save user");
+      if (!res.ok) {
+        throw new Error("Failed to save user");
+      }
+      
       const savedUser = await res.json();
       localStorage.setItem("user", JSON.stringify(savedUser));
-      navigate("/");
+      
+      // Redirect to customer dashboard (My Appointments page)
+      navigate("/appointments");
     } catch (error) {
+      console.error("Backend save error:", error);
+      alert("Failed to save user data. Please try again.");
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      // Use redirect instead of popup to avoid COOP issues
+      await signInWithRedirect(auth, googleProvider);
+    } catch (error) {
+      setLoading(false);
       console.error("Google login error:", error);
       
       // Handle specific Firebase auth errors
       if (error.code === 'auth/unauthorized-domain') {
         alert("This domain is not authorized for Google login. Please contact support.");
-      } else if (error.code === 'auth/popup-blocked') {
-        alert("Popup was blocked. Please allow popups and try again.");
       } else {
         alert("Google login failed. Please try again.");
       }
@@ -85,7 +117,7 @@ export default function CustomerLogin() {
         photoURL: "",
       };
       localStorage.setItem("user", JSON.stringify(storedUser));
-      navigate("/profile");
+      navigate("/appointments");
     } catch {
       alert("Invalid OTP");
     }
@@ -103,13 +135,17 @@ export default function CustomerLogin() {
           Log in to book top salon services easily and quickly.
         </p>
 
-        <button className="google-btn" onClick={handleGoogleLogin}>
+        <button 
+          className="google-btn" 
+          onClick={handleGoogleLogin}
+          disabled={loading}
+        >
           <img
             src="https://www.svgrepo.com/show/355037/google.svg"
             alt="Google"
             className="google-icon"
           />
-          Continue with Google
+          {loading ? "Redirecting..." : "Continue with Google"}
         </button>
 
         <div className="divider">
