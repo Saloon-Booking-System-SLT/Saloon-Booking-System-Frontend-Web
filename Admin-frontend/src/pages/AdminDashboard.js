@@ -135,38 +135,54 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     const confirmLogout = window.confirm("Do you really want to logout?");
     if (confirmLogout) {
-      localStorage.removeItem("salonUser");
-      navigate("/");
+      localStorage.removeItem("adminUser");
+      navigate("/login");
     }
   };
 
-  // Function to load salon data
-  const loadSalonData = () => {
-    const salonData = JSON.parse(localStorage.getItem("salonUser"));
-    if (salonData?.id) {
-      setSalon(salonData);
-      return salonData;
+  // Function to load admin data
+  const loadAdminData = () => {
+    const adminData = JSON.parse(localStorage.getItem("adminUser"));
+    if (adminData?.id) {
+      setSalon(adminData); // Using salon state for compatibility
+      return adminData;
     }
     return null;
   };
 
   // Fetch dashboard data
   useEffect(() => {
-    const salonData = loadSalonData();
-    if (!salonData) return;
+    const adminData = loadAdminData();
+    if (!adminData) {
+      navigate("/login");
+      return;
+    }
 
     const fetchDashboardData = async () => {
       try {
+        // For admin, fetch data from all salons (demo - you might want to limit this)
+        // Get first salon for demo purposes or create admin-specific endpoints
+        const salonsRes = await axios.get(`http://localhost:5000/api/salons`);
+        const salons = salonsRes.data;
+        
+        if (salons.length === 0) {
+          console.log("No salons found");
+          return;
+        }
+
+        // Use first salon for demo dashboard data
+        const salonData = salons[0];
+
         // Fetch appointments
-        const appointmentsRes = await axios.get(`http://localhost:5000/api/appointments/salon/${salonData.id}`);
+        const appointmentsRes = await axios.get(`http://localhost:5000/api/appointments/salon/${salonData._id}`);
         const appointments = appointmentsRes.data;
         
         // Fetch services
-        const servicesRes = await axios.get(`http://localhost:5000/api/services/salon/${salonData.id}`);
+        const servicesRes = await axios.get(`http://localhost:5000/api/services/salon/${salonData._id}`);
         const services = servicesRes.data;
         
         // Fetch professionals
-        const professionalsRes = await axios.get(`http://localhost:5000/api/professionals/salon/${salonData.id}`);
+        const professionalsRes = await axios.get(`http://localhost:5000/api/professionals/salon/${salonData._id}`);
         const professionals = professionalsRes.data;
 
         // Calculate analytics
@@ -254,20 +270,20 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Refresh salon data when page becomes visible (e.g., returning from profile page)
+  // Refresh admin data when page becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        loadSalonData();
+        loadAdminData();
       }
     };
 
     const handleFocus = () => {
-      loadSalonData();
+      loadAdminData();
     };
 
-    const handleSalonProfileUpdated = (event) => {
-      // Update salon data when profile is updated
+    const handleAdminProfileUpdated = (event) => {
+      // Update admin data when profile is updated
       if (event.detail?.updatedData) {
         setSalon(event.detail.updatedData);
       }
@@ -275,12 +291,12 @@ const AdminDashboard = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('focus', handleFocus);
-    window.addEventListener('salonProfileUpdated', handleSalonProfileUpdated);
+    window.addEventListener('adminProfileUpdated', handleAdminProfileUpdated);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('salonProfileUpdated', handleSalonProfileUpdated);
+      window.removeEventListener('adminProfileUpdated', handleAdminProfileUpdated);
     };
   }, []);
 
@@ -328,7 +344,7 @@ const AdminDashboard = () => {
           <header className="admin-header">
             <div className="header-left">
               <h1>Admin Dashboard</h1>
-              <p>Welcome back: {salon?.name || 'Salon Owner'}</p>
+              <p>Welcome back: {salon?.name || 'System Administrator'}</p>
             </div>
             <div className="admin-header-right" ref={notifRef}>
               {/* Notification Bell */}

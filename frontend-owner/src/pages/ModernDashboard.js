@@ -113,10 +113,15 @@ const ModernDashboard = () => {
   // ✅ Fetch salon data and appointments
   useEffect(() => {
     const salonData = JSON.parse(localStorage.getItem("salonUser"));
-    if (!salonData?.id) {
-      setLoading(false);
+    console.log("Dashboard - checking salon data:", salonData);
+    
+    if (!salonData || !salonData.id) {
+      console.log("No salon data found, redirecting to login");
+      navigate("/");
       return;
     }
+    
+    console.log("Salon data found, setting salon:", salonData);
     setSalon(salonData);
 
     const fetchAppointments = async () => {
@@ -142,7 +147,7 @@ const ModernDashboard = () => {
     };
 
     fetchAppointments();
-  }, []);
+  }, [navigate]);
 
   const salonId = salon?.id;
 

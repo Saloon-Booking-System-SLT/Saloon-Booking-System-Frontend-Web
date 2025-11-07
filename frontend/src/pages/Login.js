@@ -110,21 +110,88 @@ export default function CustomerLogin() {
     try {
       const result = await confirmationResult.confirm(otp);
       const user = result.user;
-      const storedUser = {
-        name: "OTP User",
-        phone: user.phoneNumber,
-        email: "",
-        photoURL: "",
-      };
-      localStorage.setItem("user", JSON.stringify(storedUser));
+      
+      // Save phone user to backend
+      const phoneUser = await savePhoneUserToBackend(user);
+      
       navigate("/appointments");
-    } catch {
+    } catch (error) {
+      console.error("OTP verification error:", error);
       alert("Invalid OTP");
     }
   };
 
-  const handleGuestContinue = () => {
-    navigate("/");
+  const savePhoneUserToBackend = async (user) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/users/phone-login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: user.phoneNumber,
+          name: "Phone User"
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to save phone user");
+      }
+      
+      const savedUser = await res.json();
+      localStorage.setItem("user", JSON.stringify(savedUser));
+      return savedUser;
+    } catch (error) {
+      console.error("Backend save error:", error);
+      // Even if backend fails, create local user for session
+      const localUser = {
+        name: "Phone User",
+        phone: user.phoneNumber,
+        email: "",
+        photoURL: "",
+      };
+      localStorage.setItem("user", JSON.stringify(localUser));
+      return localUser;
+    }
+  };
+
+  const handleGuestContinue = async () => {
+    try {
+      // Create guest session with backend
+      const res = await fetch(`${API_BASE_URL}/api/users/guest-login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (res.ok) {
+        const guestUser = await res.json();
+        localStorage.setItem("user", JSON.stringify(guestUser));
+      } else {
+        // Fallback to local guest user
+        const guestUser = {
+          _id: 'guest_' + Date.now(),
+          name: 'Guest User',
+          email: '',
+          phone: '',
+          photoURL: '',
+          isGuest: true
+        };
+        localStorage.setItem("user", JSON.stringify(guestUser));
+      }
+      
+      navigate("/");
+    } catch (error) {
+      console.error("Guest login error:", error);
+      // Always allow guest access as fallback
+      const guestUser = {
+        _id: 'guest_' + Date.now(),
+        name: 'Guest User',
+        email: '',
+        phone: '',
+        photoURL: '',
+        isGuest: true
+      };
+      localStorage.setItem("user", JSON.stringify(guestUser));
+      navigate("/");
+    }
   };
 
   return (

@@ -37,6 +37,39 @@
   margin-bottom: 30px;
 }
 
+/* Auth Method Selector */
+.auth-method-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  padding: 4px;
+  background-color: #f1f5f9;
+}
+
+.auth-method-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-method-btn.active {
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.auth-method-btn:hover:not(.active) {
+  background: #e2e8f0;
+  color: #475569;
+}
+
 /* Form Styles */
 .owner-login-form {
   display: flex;
@@ -73,6 +106,49 @@
 
 .owner-login-button:hover {
   background: linear-gradient(to right, #00AEEF, #1FAF38);
+}
+
+/* Google Login Styles */
+.google-login-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.google-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.google-login-btn:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.google-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Phone Login Styles */
+.phone-login-section {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Footer Links */
@@ -134,5 +210,9 @@
   .owner-login-subtitle,
   .owner-redirect-text {
     text-align: center;
+  }
+
+  .auth-method-selector {
+    flex-direction: column;
   }
 }

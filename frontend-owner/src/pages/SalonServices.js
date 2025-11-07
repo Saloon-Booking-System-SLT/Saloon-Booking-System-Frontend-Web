@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import '../css/SalonServices.css';
@@ -20,22 +20,22 @@ const SalonServices = () => {
 
   // Updated Sidebar Component
   const Sidebar = () => {
-    const navigate = useNavigate();
+    const sidebarNavigate = useNavigate();
 
     return (
       <aside className="modern-sidebar">
         <img src={logo} alt="Brand Logo" className="modern-logo" />
-        <i className="fas fa-home" title="Home" onClick={() => navigate('/dashboard')}></i>
-        <i className="fas fa-calendar-alt" title="Calendar" onClick={() => navigate('/calendar')}></i>
-        <i className="fas fa-smile active" title="Services" onClick={() => navigate('/services')}></i>
-        <i className="fas fa-comment" title="Feedbacks" onClick={() => navigate('/feedbacks')}></i>
-        <i className="fas fa-users" title="Professionals" onClick={() => navigate('/professionals')}></i>
-        <i className="fas fa-clock" title="Time Slots" onClick={() => navigate('/timeslots')}></i>
+        <i className="fas fa-home" title="Home" onClick={() => sidebarNavigate('/dashboard')}></i>
+        <i className="fas fa-calendar-alt" title="Calendar" onClick={() => sidebarNavigate('/calendar')}></i>
+        <i className="fas fa-smile active" title="Services" onClick={() => sidebarNavigate('/services')}></i>
+        <i className="fas fa-comment" title="Feedbacks" onClick={() => sidebarNavigate('/feedbacks')}></i>
+        <i className="fas fa-users" title="Professionals" onClick={() => sidebarNavigate('/professionals')}></i>
+        <i className="fas fa-clock" title="Time Slots" onClick={() => sidebarNavigate('/timeslots')}></i>
       </aside>
     );
   };
 
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     if (!salon?.id) return;
     try {
       const res = await fetch(`http://localhost:5000/api/services/${salon.id}`);
@@ -44,11 +44,11 @@ const SalonServices = () => {
     } catch (err) {
       console.error("Failed to fetch services", err);
     }
-  };
+  }, [salon?.id]);
 
   useEffect(() => {
     fetchServices();
-  }, [salon?.id]);
+  }, [fetchServices]);
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
