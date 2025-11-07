@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import Home from './pages/HomePage';
 // import LoginSelection from './pages/LoginSelection';
 import CustomerLogin from './pages/Login';
+import BusinessRedirect from './pages/BusinessRedirect';
 import Searchsalon from './pages/searchsalon';
 import Profile from './pages/Profile';
 import SelectServicesPage from './pages/SelectServicesPage';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Navigate to="/login/customer" replace />} />
         <Route path="/login/customer" element={<CustomerLogin />} />
+        <Route path="/login/business" element={<BusinessRedirect />} />
         <Route path="/searchsalon" element={<Searchsalon />} />
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/select-services/:salonId" element={<SelectServicesPage />} />
