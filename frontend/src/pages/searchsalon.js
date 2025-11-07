@@ -80,7 +80,15 @@ const fetchSalons = useCallback(async () => {
     if (!isNearbyMode) applyFilters(salonsWithRatings, query, genderFilter);
   } catch (err) {
     console.error("Failed to load salons", err);
-    alert("Failed to load salons");
+    
+    // Handle specific error types
+    if (err.message && err.message.includes('429')) {
+      alert("Too many requests. Please wait a moment and try again.");
+    } else if (err.message && err.message.includes('Failed to fetch')) {
+      alert("Network error. Please check your connection and try again.");
+    } else {
+      alert("Failed to load salons. Please try again later.");
+    }
   }
 }, [query, genderFilter, isNearbyMode]);
 
