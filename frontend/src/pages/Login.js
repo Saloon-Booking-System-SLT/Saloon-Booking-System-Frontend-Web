@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import haircutImage from "../assets/hairdresser.jpg";
 import "../css/Login.css";
+import API_BASE_URL from "../config/api";
 
 export default function CustomerLogin() {
   const [phone, setPhone] = useState("");
@@ -21,7 +22,7 @@ export default function CustomerLogin() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
-      const res = await fetch("http://localhost:5000/api/users/google-login", {
+      const res = await fetch(`${API_BASE_URL}/api/users/google-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -35,8 +36,17 @@ export default function CustomerLogin() {
       const savedUser = await res.json();
       localStorage.setItem("user", JSON.stringify(savedUser));
       navigate("/");
-    } catch {
-      alert("Google login failed");
+    } catch (error) {
+      console.error("Google login error:", error);
+      
+      // Handle specific Firebase auth errors
+      if (error.code === 'auth/unauthorized-domain') {
+        alert("This domain is not authorized for Google login. Please contact support.");
+      } else if (error.code === 'auth/popup-blocked') {
+        alert("Popup was blocked. Please allow popups and try again.");
+      } else {
+        alert("Google login failed. Please try again.");
+      }
     }
   };
 
